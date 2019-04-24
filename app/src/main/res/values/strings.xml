@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Reuniões</string>
+    <string name="main_activity_label">Calendário de Reuniões</string>
+    <string name="add_metting_label">Adicionar Reunião</string>
+    <string name="add_metting_tab1">Reunião</string>
+    <string name="add_metting_tab2">Local</string>
+    <string name="action_settings">Configurações</string>
+
+    <array name="material_calendar_months_array">
+        <item>Janeiro</item>
+        <item>Fevereiro</item>
+        <item>Março</item>
+        <item>Abril</item>
+        <item>Maio</item>
+        <item>Junho</item>
+        <item>Julho</item>
+        <item>Agosto</item>
+        <item>Setembro</item>
+        <item>Outubro</item>
+        <item>Novembro</item>
+        <item>Dezembro</item>
+    </array>
+</resources>
