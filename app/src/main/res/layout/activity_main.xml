@@ -29,6 +29,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_add_white_24"/>
+        app:srcCompat="@drawable/ic_add_white_24" />
 
 </android.support.design.widget.CoordinatorLayout>
