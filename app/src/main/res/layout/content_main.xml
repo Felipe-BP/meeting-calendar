@@ -8,11 +8,9 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.applandeo.materialcalendarview.CalendarView
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:headerColor="@color/colorHeaderCalendar"
-        app:headerLabelColor="#000000"/>
+        android:layout_height="match_parent"/>
 
 </android.support.constraint.ConstraintLayout>

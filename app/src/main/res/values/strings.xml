@@ -1,39 +1,57 @@
 <resources>
-    <string name="app_name">Reuniões</string>
-    <string name="main_activity_label">Calendário de Reuniões</string>
-    <string name="add_metting_label">Adicionar Reunião</string>
-    <string name="add_metting_tab1">Reunião</string>
+    <string name="app_name">Meetings</string>
+    <string name="main_activity_label">Meeting Calendar</string>
+    <string name="add_metting_label">Add Meeting</string>
+    <string name="add_metting_tab1">Meeting</string>
     <string name="add_metting_tab2">Local</string>
-    <string name="action_settings">Configurações</string>
-    <string name="input_title">Título</string>
-    <string name="input_description">Descrição</string>
-    <string name="meeting_title_add">Adicione as Informações da Reunião</string>
-    <string name="label_time_start">Insira Horário de Início</string>
+    <string name="action_settings">About</string>
+    <string name="input_title">Title</string>
+    <string name="input_description">Description</string>
+    <string name="meeting_title_add">Add Informations of Meeting</string>
+    <string name="label_time_start">"Enter Start Time: "</string>
+    <string name="label_time_end">"Enter End Time: "</string>
+    <string name="label_date_selected">"Selected Date: "</string>
 
-    <string name="material_calendar_monday">S</string>
+    <string name="material_calendar_monday">M</string>
     <string name="material_calendar_tuesday">T</string>
-    <string name="material_calendar_wednesday">Q</string>
-    <string name="material_calendar_thursday">Q</string>
-    <string name="material_calendar_friday">S</string>
+    <string name="material_calendar_wednesday">W</string>
+    <string name="material_calendar_thursday">T</string>
+    <string name="material_calendar_friday">F</string>
     <string name="material_calendar_saturday">S</string>
-    <string name="material_calendar_sunday">D</string>
+    <string name="material_calendar_sunday">S</string>
 
     <array name="material_calendar_months_array">
-        <item>Janeiro</item>
-        <item>Fevereiro</item>
-        <item>Março</item>
-        <item>Abril</item>
-        <item>Maio</item>
-        <item>Junho</item>
-        <item>Julho</item>
-        <item>Agosto</item>
-        <item>Setembro</item>
-        <item>Outubro</item>
-        <item>Novembro</item>
-        <item>Dezembro</item>
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
     </array>
 
-    <string name="material_calendar_today_button">Hoje</string>
+    <string name="material_calendar_today_button">Today</string>
     <string name="material_calendar_positive_button">OK</string>
-    <string name="material_calendar_negative_button">Cancelar</string>
+    <string name="material_calendar_negative_button">Cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity__tabs">Add Meeting</string>
+    <string name="meeting_local_add">Enter Informations of Local</string>
+    <string name="title_activity_add__meeting_tabbed">Add_Meeting_tabbed</string>
+    <string name="tab_text_1">Meeting</string>
+    <string name="tab_text_2">Local</string>
+    <string name="input_local_name">Name</string>
+    <string name="input_local_description">Description</string>
+    <string name="input_local_address">Address</string>
+    <string name="invalid_input">Please fill all inputs to create a meeting</string>
+    <string name="about_title">Informations About App</string>
+    <string name="version_about">Version: @Beta 1.0.0</string>
+    <string name="about_app">This app was built with the goal of streamlining the lives of people who attend many meetings and want an organization in their lives.</string>
+    <string name="title_activity__about">About</string>
+    <string name="about_author">Author: Felipe Bueno de Paula</string>
 </resources>

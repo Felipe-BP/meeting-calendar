@@ -1,10 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="br.edu.utfpr.alunos.felipe.meetingcalendar.MainActivity">
-    <item
-        android:id="@+id/swith_dark_mode"
-        android:title="DarkMode" />
+    tools:context="br.edu.utfpr.alunos.felipe.meetingcalendar.Add_Meeting_tabbed">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

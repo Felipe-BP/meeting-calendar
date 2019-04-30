@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reuniões</string>
+    <string name="main_activity_label">Calendário de Reuniões</string>
+    <string name="add_metting_label">Adicionar Reunião</string>
+    <string name="add_metting_tab1">Reunião</string>
+    <string name="add_metting_tab2">Local</string>
+    <string name="action_settings">Sobre</string>
+    <string name="input_title">Título</string>
+    <string name="input_description">Descrição</string>
+    <string name="meeting_title_add">Adicione as Informações da Reunião</string>
+    <string name="label_time_start">"Insira Horário de Início: "</string>
+    <string name="label_time_end">"Insira Horário de Término: "</string>
+    <string name="label_date_selected">"Data Selecionada: "</string>
+
+    <string name="material_calendar_monday">S</string>
+    <string name="material_calendar_tuesday">T</string>
+    <string name="material_calendar_wednesday">Q</string>
+    <string name="material_calendar_thursday">Q</string>
+    <string name="material_calendar_friday">S</string>
+    <string name="material_calendar_saturday">S</string>
+    <string name="material_calendar_sunday">D</string>
+
+    <array name="material_calendar_months_array">
+        <item>Janeiro</item>
+        <item>Fevereiro</item>
+        <item>Março</item>
+        <item>Abril</item>
+        <item>Maio</item>
+        <item>Junho</item>
+        <item>Julho</item>
+        <item>Agosto</item>
+        <item>Setembro</item>
+        <item>Outubro</item>
+        <item>Novembro</item>
+        <item>Dezembro</item>
+    </array>
+
+    <string name="material_calendar_today_button">Hoje</string>
+    <string name="material_calendar_positive_button">OK</string>
+    <string name="material_calendar_negative_button">Cancelar</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity__tabs">Adicione Reunião</string>
+    <string name="meeting_local_add">Insira as Informações do Local</string>
+    <string name="title_activity_add__meeting_tabbed">Add_Meeting_tabbed</string>
+    <string name="tab_text_1">Reunião</string>
+    <string name="tab_text_2">Local</string>
+    <string name="input_local_name">Nome</string>
+    <string name="input_local_description">Descrição</string>
+    <string name="input_local_address">Endereço</string>
+    <string name="invalid_input">Por favor preencha todos os campos</string>
+    <string name="title_activity__about">Sobre</string>
+    <string name="about_title">Informações Sobre o App</string>
+    <string name="version_about">Versão: @Beta 1.0.0</string>
+    <string name="about_app">Este app foi construído com o objetivo de agilizar a vida das pessoas que participam de muitos reuniões e desejam uma organização em suas vidas.</string>
+    <string name="about_author">Autor: Felipe Bueno de Paula</string>
+</resources>

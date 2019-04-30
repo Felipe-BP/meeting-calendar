@@ -12,14 +12,19 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".Add_Meeting"
-            android:label="@string/add_metting_label">
-
-        </activity>
+            android:name=".Activity_About"
+            android:label="@string/title_activity__about"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Activity_Tabs"
+            android:label="@string/title_activity__tabs"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
             android:label="@string/main_activity_label"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
