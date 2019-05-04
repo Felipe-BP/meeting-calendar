@@ -1,10 +1,15 @@
 package br.edu.utfpr.alunos.felipe.meetingcalendar;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -31,9 +36,13 @@ import com.bentech.android.appcommons.utils.EditTextUtils;
 import com.bentech.android.appcommons.validator.EditTextRequiredInputValidator;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.OnFragmentInteractionListener, FragmentLocal.OnFragmentInteractionListener {
 
@@ -317,7 +326,27 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
                 Intent intent = new Intent(Activity_Tabs.this, MainActivity.class);
                 startActivity(intent);
             } else {
+                //update in memory
                 MainActivity.setMeeting(meeting);
+
+                //flow to dispatch notification 10 minutes before start meeting
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+                PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat mDateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+                String time = String.valueOf(calendarDay.getYear()) + "/" + String.valueOf(calendarDay.getMonth()) + "/" + String.valueOf(calendarDay.getDay()) + " " + localTimeInit.getHour() + ":" + (localTimeInit.getMinute() - 10);
+                try {
+                    calendar.setTime(mDateFormatter.parse(time));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcast);
+                }
+
                 finish();
             }
         } else {
