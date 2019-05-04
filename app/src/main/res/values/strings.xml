@@ -54,4 +54,11 @@
     <string name="about_app">This app was built with the goal of streamlining the lives of people who attend many meetings and want an organization in their lives.</string>
     <string name="title_activity__about">About</string>
     <string name="about_author">Author: Felipe Bueno de Paula</string>
+    <string name="title_activity__list">Meetings List</string>
+    <string name="title_activity__list_label_init">"Start: "</string>
+    <string name="title_activity__list_label_end">"End: "</string>
+    <string name="title_activity__list_label_local">"Local Informations: "</string>
+    <string name="delete_dialog">Are you sure you want to delete this meeting?</string>
+    <string name="delete_confirm">Confirm</string>
+    <string name="delete_cancel">Cancel</string>
 </resources>

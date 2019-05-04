@@ -55,4 +55,11 @@
     <string name="version_about">Versão: @Beta 1.0.0</string>
     <string name="about_app">Este app foi construído com o objetivo de agilizar a vida das pessoas que participam de muitos reuniões e desejam uma organização em suas vidas.</string>
     <string name="about_author">Autor: Felipe Bueno de Paula</string>
+    <string name="title_activity__list">Lista de Reuniões</string>
+    <string name="title_activity__list_label_init">"Início: "</string>
+    <string name="title_activity__list_label_end">"Término: "</string>
+    <string name="title_activity__list_label_local">"Informações do Local: "</string>
+    <string name="delete_dialog">Você tem certeza que deseja deletar esta reunião</string>
+    <string name="delete_confirm">Confirmar</string>
+    <string name="delete_cancel">Cancelar</string>
 </resources>

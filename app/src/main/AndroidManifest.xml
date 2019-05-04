@@ -12,10 +12,19 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".Activity_List"
+            android:label="@string/title_activity__list"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.edu.utfpr.alunos.felipe.meetingcalendar.MainActivity" />
+        </activity>
+        <activity
             android:name=".Activity_About"
             android:label="@string/title_activity__about"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity_Tabs"
             android:label="@string/title_activity__tabs"

@@ -31,6 +31,8 @@ import com.bentech.android.appcommons.utils.EditTextUtils;
 import com.bentech.android.appcommons.validator.EditTextRequiredInputValidator;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.threeten.bp.LocalTime;
+
 import java.util.Calendar;
 
 public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.OnFragmentInteractionListener, FragmentLocal.OnFragmentInteractionListener {
@@ -44,8 +46,19 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
     private EditText editTextDescriptionLocal;
     private EditText editTextLocalAddress;
     private CalendarDay calendarDay;
+    private String getTextInit;
+    private String getTextEnd;
+    private static LocalTime localTimeInit;
+    private static LocalTime localTimeEnd;
+    private boolean update = false;
+    private int indexToUpdate;
 
-    private boolean validateHour;
+    private static boolean validateHourInit;
+    private static boolean validateHourEnd;
+
+    private Meeting meeting;
+    private Local local;
+    private Meeting meetingToEdit;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -63,7 +76,6 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         Bundle bundle = getIntent().getExtras();
 
         setTheme(bundle.getBoolean("Theme")? R.style.DarkTheme : R.style.AppTheme);
@@ -90,7 +102,6 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         //setup arrow to back main activity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -101,9 +112,15 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
         editTextLocalAddress = findViewById(R.id.editTextLocalAddress);
         editTextNameMeeting = findViewById(R.id.editTextNameMeeting);
         editTextDescriptionMeeting = findViewById(R.id.editTextDescriptionMeeting);
+
         calendarDay = bundle.getParcelable("Date");
+
         txView2 = findViewById(R.id.textView2);
+        getTextInit = (String) txView2.getText();
+
         txView3 = findViewById(R.id.textView3);
+        getTextEnd = (String) txView3.getText();
+
         txViewDate = findViewById(R.id.textViewDate);
 
         //set the date recieved in TextView
@@ -112,9 +129,28 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
                             + "/" + String.valueOf(calendarDay.getMonth())
                             + "/" + String.valueOf(calendarDay.getYear()));
 
-        validateHour = false;
+        if(update) {
+            setInformationsInputs(meetingToEdit);
+        } else {
+            //initializing validation of pickers timer
+            validateHourInit = false;
+            validateHourEnd = false;
+        }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Bundle bundle = getIntent().getExtras();
+        meetingToEdit = bundle.getParcelable("Meeting");
+        if(meetingToEdit != null) {
+            validateHourInit = true;
+            validateHourEnd = true;
+            update = true;
+        }
     }
 
     @Override
@@ -205,13 +241,15 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
-        TextView resultText;
-        Boolean validate;
+        private TextView resultText;
+        private String textGet;
+        private boolean condition;
 
         @SuppressLint("ValidFragment")
-        public TimePickerFragment(TextView tx, boolean validateH) {
+        public TimePickerFragment(TextView tx, String getText, boolean cond) {
             resultText = tx;
-            validate = validateH;
+            textGet = getText;
+            condition = cond;
         }
 
         @Override
@@ -226,12 +264,20 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            resultText.setTextColor(getResources().getColor(R.color.black));
-            validate = !validate;
-            if(minute < 10) {
-                resultText.setText(resultText.getText() + String.valueOf(hourOfDay) + ":" + "0" + String.valueOf(minute));
+            resultText.setTextColor(getResources().getColor(R.color.textDarkPrimary));
+            if(condition){
+                Activity_Tabs.setValidateHourEnd(true);
+                Activity_Tabs.setLocalTimeEnd(LocalTime.of(hourOfDay, minute));
             } else {
-                resultText.setText(resultText.getText() + String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
+                Activity_Tabs.setValidateHourInit(true);
+                Activity_Tabs.setLocalTimeInit(LocalTime.of(hourOfDay, minute));
+            }
+            if(minute < 10) {
+                resultText.setText("");
+                resultText.setText(textGet + String.valueOf(hourOfDay) + ":" + "0" + String.valueOf(minute));
+            } else {
+                resultText.setText("");
+                resultText.setText(textGet + String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
             }
         }
     }
@@ -239,25 +285,52 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
     public void showTimePicker(View v) {
         switch (v.getId()) {
             case R.id.textView2:
-                DialogFragment newFragment = new TimePickerFragment(txView2, validateHour);
+                DialogFragment newFragment = new TimePickerFragment(txView2, getTextInit, false);
                 newFragment.show(getSupportFragmentManager(), "timePicker");
                 break;
             case R.id.textView3:
-                DialogFragment newFragment2 = new TimePickerFragment(txView3, validateHour);
+                DialogFragment newFragment2 = new TimePickerFragment(txView3, getTextEnd, true);
                 newFragment2.show(getSupportFragmentManager(), "timePicker");
                 break;
         }
     }
 
     public void createMeeting(View v) {
-        validateInputs(v);
+        boolean res = validateInputs(v);
+        if(res) {
+            local = new Local(
+                    editTextNameLocal.getText().toString(),
+                    editTextDescriptionLocal.getText().toString(),
+                    editTextLocalAddress.getText().toString()
+            );
+            meeting = new Meeting(
+                    editTextNameMeeting.getText().toString(),
+                    editTextDescriptionMeeting.getText().toString(),
+                    localTimeInit,
+                    localTimeEnd,
+                    calendarDay.getDate(),
+                    local
+            );
+            if(update) {
+                indexToUpdate = MainActivity.findIndex(meetingToEdit);
+                MainActivity.updateMeeting(meeting, indexToUpdate);
+                Intent intent = new Intent(Activity_Tabs.this, MainActivity.class);
+                startActivity(intent);
+            } else {
+                MainActivity.setMeeting(meeting);
+                finish();
+            }
+        } else {
+            Snackbar.make(v, R.string.invalid_input, Snackbar.LENGTH_LONG).show();
+        }
     }
 
-    public void validateInputs(View v) {
-        System.out.println(validateHour);
-        if(!validateHour) {
-            txView2.setTextColor(getResources().getColor(R.color.error_fg_color));
-            txView3.setTextColor(getResources().getColor(R.color.error_fg_color));
+    public boolean validateInputs(View v) {
+        if(!validateHourInit) {
+            txView2.setTextColor(getResources().getColor(R.color.invalidText));
+        }
+        if(!validateHourEnd) {
+            txView3.setTextColor(getResources().getColor(R.color.invalidText));
         }
         if(EditTextUtils.isInValid(
                 new EditTextRequiredInputValidator(editTextNameLocal),
@@ -265,8 +338,31 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
                 new EditTextRequiredInputValidator(editTextLocalAddress),
                 new EditTextRequiredInputValidator(editTextNameMeeting),
                 new EditTextRequiredInputValidator(editTextDescriptionMeeting)
-        )) {
-            Snackbar.make(v, R.string.invalid_input, Snackbar.LENGTH_LONG).show();
+        ) || !validateHourInit || !validateHourEnd) {
+            return false;
         }
+        return true;
+    }
+
+    public static void setValidateHourInit(boolean value) {
+        validateHourInit = value;
+    }
+
+    public static void setValidateHourEnd(boolean value) {
+        validateHourEnd = value;
+    }
+
+    public static void setLocalTimeInit(LocalTime localTimeInitSelected) { localTimeInit = localTimeInitSelected; }
+
+    public static void setLocalTimeEnd(LocalTime localTimeEndSelected) { localTimeEnd = localTimeEndSelected; }
+
+    public void setInformationsInputs(Meeting meeting) {
+        editTextNameMeeting.setText(meeting.getTitle());
+        editTextDescriptionMeeting.setText(meeting.getDescription());
+        txView2.setText(txView2.getText() + meeting.getTimeStart().toString());
+        txView3.setText(txView3.getText() + meeting.getTimeEnd().toString());
+        editTextNameLocal.setText(meeting.getLocal().getName());
+        editTextDescriptionLocal.setText(meeting.getLocal().getDescription());
+        editTextLocalAddress.setText(meeting.getLocal().getAddress());
     }
 }
