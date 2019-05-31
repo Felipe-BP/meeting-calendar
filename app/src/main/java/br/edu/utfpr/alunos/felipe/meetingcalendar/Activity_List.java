@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,15 +17,23 @@ import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.threeten.bp.LocalDate;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import br.edu.utfpr.alunos.felipe.meetingcalendar.dao.MeetingDao;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.database.MeetingDatabase;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.Meeting;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.MeetingAndLocal;
 
 public class Activity_List extends AppCompatActivity {
 
     private ListView listView;
     private FloatingActionButton fab;
-    private static ArrayList<Meeting> meetingsOfDay;
-    private static ArrayAdapter<Meeting> meetings;
-    private static Meeting meetingSelected;
+    private static ArrayList<MeetingAndLocal> meetingsOfDay;
+    private static ArrayAdapter<MeetingAndLocal> meetings;
+    private static MeetingAndLocal meetingSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +46,7 @@ public class Activity_List extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        meetingsOfDay = MainActivity.findMeetingsOfDay((CalendarDay) bundle.getParcelable("DaySelected"));
+        meetingsOfDay = (ArrayList<MeetingAndLocal>) getMeetingsOf((CalendarDay) bundle.getParcelable("DaySelected"));
 
         fab = findViewById(R.id.delete_meeting);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,8 +71,9 @@ public class Activity_List extends AppCompatActivity {
                 view.setSelected(false);
                 meetingSelected = meetings.getItem(position);
                 Intent intent = new Intent(Activity_List.this, Activity_Tabs.class);
-                intent.putExtra("Meeting", meetingSelected);
-                intent.putExtra("Date", CalendarDay.from(meetingSelected.getDate()));
+                intent.putExtra("Meeting", (Parcelable) meetingSelected.getMeeting());
+                intent.putExtra("Local", (Parcelable) meetingSelected.getLocal());
+                intent.putExtra("Date", CalendarDay.from(meetingSelected.getMeeting().getDate()));
                 intent.putExtra("Theme", bundle.getBoolean("Theme"));
                 startActivity(intent);
                 fab.hide();
@@ -83,6 +93,11 @@ public class Activity_List extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    public List<MeetingAndLocal> getMeetingsOf(CalendarDay day) {
+        MeetingDao meetingDao = MeetingDatabase.getDatabase(this).getMeetingDao();
+        return meetingDao.getMeetingsOfDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()).toString());
+    }
+
     public static class ConfirmDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -93,7 +108,8 @@ public class Activity_List extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             // Send the positive button event back to the host activity
                             meetings.remove(meetingSelected);
-                            MainActivity.deleteMeeting(meetingSelected);
+                            MeetingDao meetingDao = MeetingDatabase.getDatabase(MainActivity.getContext()).getMeetingDao();
+                            meetingDao.delete(meetingSelected.getMeeting().getId());
                         }
                     })
                     .setNegativeButton(R.string.delete_cancel, new DialogInterface.OnClickListener() {

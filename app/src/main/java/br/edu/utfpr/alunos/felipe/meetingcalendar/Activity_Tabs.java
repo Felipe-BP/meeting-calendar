@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -36,13 +35,18 @@ import com.bentech.android.appcommons.utils.EditTextUtils;
 import com.bentech.android.appcommons.validator.EditTextRequiredInputValidator;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
+import br.edu.utfpr.alunos.felipe.meetingcalendar.dao.LocalDao;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.dao.MeetingDao;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.database.MeetingDatabase;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.Local;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.Meeting;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.MeetingAndLocal;
 
 public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.OnFragmentInteractionListener, FragmentLocal.OnFragmentInteractionListener {
 
@@ -68,6 +72,10 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
     private Meeting meeting;
     private Local local;
     private Meeting meetingToEdit;
+    private Local localToEdit;
+
+    private LocalDao localDao = MeetingDatabase.getDatabase(this).getLocalDao();
+    private MeetingDao meetingDao = MeetingDatabase.getDatabase(this).getMeetingDao();
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -139,7 +147,7 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
                             + "/" + String.valueOf(calendarDay.getYear()));
 
         if(update) {
-            setInformationsInputs(meetingToEdit);
+            setInformationsInputs();
         } else {
             //initializing validation of pickers timer
             validateHourInit = false;
@@ -155,6 +163,7 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
 
         Bundle bundle = getIntent().getExtras();
         meetingToEdit = bundle.getParcelable("Meeting");
+        localToEdit = bundle.getParcelable("Local");
         if(meetingToEdit != null) {
             validateHourInit = true;
             validateHourEnd = true;
@@ -312,23 +321,26 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
                     editTextDescriptionLocal.getText().toString(),
                     editTextLocalAddress.getText().toString()
             );
+
             meeting = new Meeting(
                     editTextNameMeeting.getText().toString(),
                     editTextDescriptionMeeting.getText().toString(),
                     localTimeInit,
                     localTimeEnd,
                     calendarDay.getDate(),
-                    local
+                    localDao.getLocalMeeting(local.getName(), local.getAddress())
             );
+
             if(update) {
-                indexToUpdate = MainActivity.findIndex(meetingToEdit);
-                MainActivity.updateMeeting(meeting, indexToUpdate);
+                localDao.update(localToEdit.getId(), local.getName(), local.getDescription(), local.getAddress());
+                meetingDao.update(meetingToEdit.getId(), meeting.getTitle(), meeting.getDescription(), meeting.getTimeStart().toString(), meeting.getTimeEnd().toString(), meeting.getDate().toString());
+                System.out.println();
                 Intent intent = new Intent(Activity_Tabs.this, MainActivity.class);
                 startActivity(intent);
             } else {
-                //update in memory
-                MainActivity.setMeeting(meeting);
 
+                localDao.insert(local);
+                meetingDao.insert(meeting);
                 //flow to dispatch notification 10 minutes before start meeting
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -385,13 +397,15 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
 
     public static void setLocalTimeEnd(LocalTime localTimeEndSelected) { localTimeEnd = localTimeEndSelected; }
 
-    public void setInformationsInputs(Meeting meeting) {
-        editTextNameMeeting.setText(meeting.getTitle());
-        editTextDescriptionMeeting.setText(meeting.getDescription());
-        txView2.setText(txView2.getText() + meeting.getTimeStart().toString());
-        txView3.setText(txView3.getText() + meeting.getTimeEnd().toString());
-        editTextNameLocal.setText(meeting.getLocal().getName());
-        editTextDescriptionLocal.setText(meeting.getLocal().getDescription());
-        editTextLocalAddress.setText(meeting.getLocal().getAddress());
+    public void setInformationsInputs() {
+        editTextNameMeeting.setText(meetingToEdit.getTitle());
+        editTextDescriptionMeeting.setText(meetingToEdit.getDescription());
+        txView2.setText(txView2.getText() + meetingToEdit.getTimeStart().toString());
+        localTimeInit = meetingToEdit.getTimeStart();
+        txView3.setText(txView3.getText() + meetingToEdit.getTimeEnd().toString());
+        localTimeEnd = meetingToEdit.getTimeEnd();
+        editTextNameLocal.setText(localToEdit.getName());
+        editTextDescriptionLocal.setText(localToEdit.getDescription());
+        editTextLocalAddress.setText(localToEdit.getAddress());
     }
 }

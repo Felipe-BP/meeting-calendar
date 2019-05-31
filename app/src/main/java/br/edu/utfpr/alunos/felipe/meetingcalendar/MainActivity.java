@@ -1,5 +1,6 @@
 package br.edu.utfpr.alunos.felipe.meetingcalendar;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,11 @@ import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import br.edu.utfpr.alunos.felipe.meetingcalendar.dao.MeetingDao;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.database.MeetingDatabase;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.Meeting;
+import br.edu.utfpr.alunos.felipe.meetingcalendar.model.MeetingAndLocal;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -191,46 +197,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static void setMeeting(Meeting meeting) {
-        meetings.add(meeting);
-    }
-
-    public static ArrayList<Meeting> findMeetingsOfDay(CalendarDay day) {
-        ArrayList<Meeting> meetingsOfDay = new ArrayList<>();
-
-        for(Meeting m : meetings) {
-            if(CalendarDay.from(m.getDate()).equals(day)){
-                meetingsOfDay.add(m);
-            }
-        }
-
-        return meetingsOfDay;
-    }
-
     public boolean existsMeeting(CalendarDay day) {
-        for (Meeting m : meetings) {
-            if (day.equals(CalendarDay.from(m.getDate()))) {
-                return true;
-            }
+        MeetingDao meetingDao = MeetingDatabase.getDatabase(this).getMeetingDao();
+        List<MeetingAndLocal> meetingsCalendar = meetingDao.getMeetingsOfDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()).toString());
+        System.out.println(meetingsCalendar.toString());
+        if(meetingsCalendar.size() > 0) {
+            return true;
         }
         return false;
-    }
-
-    public static int findIndex(Meeting m) {
-        for(int i = 0; i < meetings.size(); i++) {
-            if(meetings.get(i).toString().equals(m.toString())){
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public static void updateMeeting(Meeting meeting, int index) {
-        meetings.set(index, meeting);
-    }
-
-    public static void deleteMeeting(Meeting meeting) {
-        meetings.remove(meeting);
     }
 
     public static Context getContext(){
