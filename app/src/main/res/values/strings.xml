@@ -61,4 +61,6 @@
     <string name="delete_dialog">Are you sure you want to delete this meeting?</string>
     <string name="delete_confirm">Confirm</string>
     <string name="delete_cancel">Cancel</string>
+    <string name="menu_item_edit">Edit</string>
+    <string name="menu_item_excluir">Delete</string>
 </resources>

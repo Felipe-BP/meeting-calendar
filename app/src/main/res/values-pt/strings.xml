@@ -62,4 +62,6 @@
     <string name="delete_dialog">Você tem certeza que deseja deletar esta reunião</string>
     <string name="delete_confirm">Confirmar</string>
     <string name="delete_cancel">Cancelar</string>
+    <string name="menu_item_edit">Alterar</string>
+    <string name="menu_item_excluir">Excluir</string>
 </resources>

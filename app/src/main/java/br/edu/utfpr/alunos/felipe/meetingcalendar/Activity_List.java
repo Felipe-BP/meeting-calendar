@@ -10,6 +10,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,10 +37,11 @@ public class Activity_List extends AppCompatActivity {
     private static ArrayList<MeetingAndLocal> meetingsOfDay;
     private static ArrayAdapter<MeetingAndLocal> meetings;
     private static MeetingAndLocal meetingSelected;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
 
         setTheme(bundle.getBoolean("Theme") ? R.style.DarkTheme : R.style.AppTheme);
 
@@ -65,32 +69,42 @@ public class Activity_List extends AppCompatActivity {
 
         listView.setAdapter(meetings);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                view.setSelected(false);
-                meetingSelected = meetings.getItem(position);
+        registerForContextMenu(listView);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info;
+
+        info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case R.id.menuItemEdit :
+                meetingSelected = meetings.getItem(info.position);
                 Intent intent = new Intent(Activity_List.this, Activity_Tabs.class);
                 intent.putExtra("Meeting", (Parcelable) meetingSelected.getMeeting());
                 intent.putExtra("Local", (Parcelable) meetingSelected.getLocal());
                 intent.putExtra("Date", CalendarDay.from(meetingSelected.getMeeting().getDate()));
                 intent.putExtra("Theme", bundle.getBoolean("Theme"));
                 startActivity(intent);
-                fab.hide();
-            }
-        });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                view.setSelected(true);
-                meetingSelected = meetings.getItem(position);
-                fab.show();
-                return true;
-            }
-        });
+            case R.id.menuItemExcluir :
+                meetingSelected = meetings.getItem(info.position);
+                DialogFragment dialog = new ConfirmDialogFragment();
+                dialog.show(getSupportFragmentManager(), "ConfirmDialogFragment");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            default :
+                return super.onContextItemSelected(item);
+        }
     }
 
     public List<MeetingAndLocal> getMeetingsOf(CalendarDay day) {

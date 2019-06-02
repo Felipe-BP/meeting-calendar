@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean existsMeeting(CalendarDay day) {
         MeetingDao meetingDao = MeetingDatabase.getDatabase(this).getMeetingDao();
         List<MeetingAndLocal> meetingsCalendar = meetingDao.getMeetingsOfDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()).toString());
-        System.out.println(meetingsCalendar.toString());
         if(meetingsCalendar.size() > 0) {
             return true;
         }

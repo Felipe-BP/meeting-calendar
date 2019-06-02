@@ -340,6 +340,7 @@ public class Activity_Tabs extends AppCompatActivity implements FragmentMeeting.
             } else {
 
                 localDao.insert(local);
+                meeting.setLocalId(localDao.getLocalMeeting(local.getName(), local.getAddress()));
                 meetingDao.insert(meeting);
                 //flow to dispatch notification 10 minutes before start meeting
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
